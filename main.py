@@ -4,7 +4,11 @@ from database import engine
 from routes import transactions
 from fastapi.middleware.cors import CORSMiddleware
 
-models.Base.metadata.create_all(bind=engine)
+app = FastAPI(
+    title="Finance Backend API",
+    description="Backend system for managing financial transactions with role-based access",
+    version="1.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,15 +17,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app = FastAPI(
-    title="Finance Backend API",
-    description="Backend system for managing financial transactions with role-based access",
-    version="1.0.0"
-)
+models.Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
     return {"message": "Finance API is running"}
+
 
 app.include_router(transactions.router, prefix="/api")
